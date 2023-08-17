@@ -1,27 +1,50 @@
 import os
 import openai
 from dotenv import load_dotenv
-from rich import print
+from rich.console import Console
+from clear import clear
+import API
+from changeModel import changeModel
 
+console = Console()
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+clear()
 
-print("[bold green]Please enter your prompt: ")
-userInput = input()
+if "OPENAI_API_KEY" in os.environ:
+    openai.api_key = os.environ["OPENAI_API_KEY"]
+else:
+    clear()
+    API.inputAPI()
+    load_dotenv()
+    openai.api_key = os.environ["OPENAI_API_KEY"]
 
-response = openai.ChatCompletion.create(
-        model = os.getenv("MODEL"),
-        messages = [
-            {
-                "role": "system",
-                "content": "You are a helpful assistant."
-            },
-            {
-                "role": "user",
-                "content": userInput
-            },
-            ]
-)
+console.print("Welcome to GPT in terminal!", style='bold green')
+console.print("1. Change API Key")
+console.print("2. Select GPT Model")
 
-print(response.choices[0].message.content)
+choice = int(input())
+match choice:
+    case 1:
+        API.inputAPI()
+
+    case 2:
+        changeModel()
+# console.print("[bold green]Please enter your prompt: ")
+# userInput = input()
+
+# response = openai.ChatCompletion.create(
+#         model = os.getenv("MODEL"),
+#         messages = [
+#             {
+#                 "role": "system",
+#                 "content": "You are a helpful assistant."
+#             },
+#             {
+#                 "role": "user",
+#                 "content": userInput
+#             },
+#             ]
+# )
+
+# print(response.choices[0].message.content)
