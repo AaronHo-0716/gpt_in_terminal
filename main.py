@@ -5,46 +5,51 @@ from rich.console import Console
 from clear import clear
 import API
 from changeModel import changeModel
+from gptResponse import response
 
 console = Console()
 load_dotenv()
 
 clear()
 
-if "OPENAI_API_KEY" in os.environ:
-    openai.api_key = os.environ["OPENAI_API_KEY"]
-else:
-    clear()
-    API.inputAPI()
-    load_dotenv()
-    openai.api_key = os.environ["OPENAI_API_KEY"]
+defaultModel = 'gpt-3.5-turbo'
 
-console.print("Welcome to GPT in terminal!", style='bold green')
-console.print("1. Change API Key")
-console.print("2. Select GPT Model")
+def initialCheck():
+    if "OPENAI_API_KEY" in os.environ:
+        clear()
+        API.changeEnv(os.environ["OPENAI_API_KEY"], defaultModel)
+        openai.api_key = os.environ["OPENAI_API_KEY"]
+    else:
+        clear()
+        API.inputAPI(defaultModel)
+        load_dotenv()
+        openai.api_key = os.environ["OPENAI_API_KEY"]
 
-choice = int(input())
-match choice:
-    case 1:
-        API.inputAPI()
+def showMenu():
+    console.print("Welcome to GPT in terminal!", style='bold green')
+    console.print("1. Change API Key")
+    console.print("2. Select GPT Model")
+    console.print("3. Use GPT")
+    console.print("4. Exit")
 
-    case 2:
-        changeModel()
-# console.print("[bold green]Please enter your prompt: ")
-# userInput = input()
+    choice = int(input())
+    match choice:
+        case 1:
+            API.inputAPI(os.environ["MODEL"])
 
-# response = openai.ChatCompletion.create(
-#         model = os.getenv("MODEL"),
-#         messages = [
-#             {
-#                 "role": "system",
-#                 "content": "You are a helpful assistant."
-#             },
-#             {
-#                 "role": "user",
-#                 "content": userInput
-#             },
-#             ]
-# )
+        case 2:
+            model = changeModel()
+            print(f"Model selected is {model}")
+            API.changeEnv(os.environ["OPENAI_API_KEY"], model)
+            
+        case 3:
+            clear()
+            response()
 
-# print(response.choices[0].message.content)
+        case 4:
+            quit()
+
+if __name__ == "__main__":
+    initialCheck()
+    while True:
+        showMenu()

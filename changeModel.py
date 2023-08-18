@@ -25,3 +25,8 @@ def changeModel():
     console.print("[bold green]These are the available models: ")
     for k, v in enumerate(gptModels):
         console.print(f"{k+1}. {v}", highlight=False)
+
+    console.print("[bold green]Type the model you want to use:")
+    model = input()
+    
+    return model
