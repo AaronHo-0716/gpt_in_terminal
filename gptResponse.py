@@ -11,13 +11,15 @@ def response():
             model = os.getenv("MODEL"),
             messages = [
                 {
-                    "role": "system",
-                    "content": "You are a helpful assistant."
-                },
-                {
                     "role": "user",
                     "content": userInput
                 },
-                ]
+                ],
+            stream=True
     )
-    console.print(response.choices[0].message.content)
+
+    for chunk in response:
+        if "content" in chunk.choices[0].delta:
+            console.print(chunk.choices[0].delta.content, end='')
+
+    print('\n')
